@@ -1,0 +1,19 @@
+<div class="login-container">
+  <div class="login-box">
+    <h1>Gestión Climatic</h1>
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label>PIN</label>
+        <input 
+          type="password" 
+          [(ngModel)]="pin" 
+          name="pin"
+          placeholder="Ingrese su PIN"
+          maxlength="4"
+        />
+      </div>
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+  </div>
+</div>
