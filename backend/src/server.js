@@ -10,6 +10,8 @@ const maquinaRoutes = require('./routes/maquina.routes');
 const repuestoRoutes = require('./routes/repuesto.routes');
 const proveedorRoutes = require('./routes/proveedor.routes');
 const tareaRoutes = require('./routes/tarea.routes');
+const planRoutes = require('./routes/plan.routes');
+const ordenRoutes = require('./routes/orden.routes');
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.use('/api/maquinas', maquinaRoutes);
 app.use('/api/repuestos', repuestoRoutes);
 app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/tareas', tareaRoutes);
+app.use('/api/planes', planRoutes);
+app.use('/api/ordenes', ordenRoutes);
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3000;

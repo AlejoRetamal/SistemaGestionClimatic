@@ -123,4 +123,58 @@ export class ApiService {
   deleteTarea(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/tareas/${id}`);
   }
+
+    // PLANES DE MANTENIMIENTO
+  getPlanes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/planes`);
+  }
+
+  getPlan(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/planes/${id}`);
+  }
+
+  getPlanByTipo(tipo: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/planes/tipo/${tipo}`);
+  }
+
+  createPlan(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/planes`, data);
+  }
+
+  updatePlan(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/planes/${id}`, data);
+  }
+
+  deletePlan(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/planes/${id}`);
+  }
+
+  // ÓRDENES DE MANTENIMIENTO
+  getOrdenes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ordenes`);
+  }
+
+  getOrdenesActivas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ordenes/activas`);
+  }
+
+  getOrden(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/ordenes/${id}`);
+  }
+
+  createOrden(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/ordenes`, data);
+  }
+
+  updateOrden(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/ordenes/${id}`, data);
+  }
+
+  cerrarOrden(id: number, empleado_id_cierre: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/ordenes/${id}/cerrar`, { empleado_id_cierre });
+  }
+
+  deleteOrden(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/ordenes/${id}`);
+  }
 }
