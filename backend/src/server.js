@@ -4,6 +4,13 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const pool = require('./config/db');
+const authRoutes = require('./routes/auth.routes');
+const empleadoRoutes = require('./routes/empleado.routes');
+const maquinaRoutes = require('./routes/maquina.routes');
+const repuestoRoutes = require('./routes/repuesto.routes');
+const proveedorRoutes = require('./routes/proveedor.routes');
+const tareaRoutes = require('./routes/tarea.routes');
+
 const app = express();
 
 // Middleware
@@ -21,6 +28,14 @@ app.get('/api/health', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/empleados', empleadoRoutes);
+app.use('/api/maquinas', maquinaRoutes);
+app.use('/api/repuestos', repuestoRoutes);
+app.use('/api/proveedores', proveedorRoutes);
+app.use('/api/tareas', tareaRoutes);
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3000;
