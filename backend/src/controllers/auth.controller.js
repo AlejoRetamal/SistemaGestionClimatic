@@ -1,33 +1,33 @@
-const pool = require('../config/db');
-
-exports.login = async (req, res) => {
-  try {
-    const { pin } = req.body;
-
-    if (!pin) {
-      return res.status(400).json({ error: 'PIN requerido' });
-    }
-
-    const connection = await pool.getConnection();
-    const [rows] = await connection.execute(
-      'SELECT id, nombre, apellido, grupo, activo FROM empleados WHERE pin = ? AND activo = TRUE',
-      [pin]
-    );
-    connection.release();
-
-    if (rows.length === 0) {
-      return res.status(401).json({ error: 'PIN incorrecto o empleado inactivo' });
-    }
-
-    const usuario = rows[0];
-    res.json({
-      id: usuario.id,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      grupo: usuario.grupo
-    });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+function createAuthController(auth, config) {
+  const cookieOptions = {
+    secure: config.secureCookie,
+    sameSite: "strict",
+    path: "/api",
+  };
+  return {
+    async login(req, res) {
+      const result = await auth.login(req.body?.pin);
+      res.cookie("climatic_session", result.token, {
+        ...cookieOptions,
+        httpOnly: true,
+        expires: result.expires,
+      });
+      res.cookie("XSRF-TOKEN", result.csrf, {
+        ...cookieOptions,
+        path: "/",
+        expires: result.expires,
+      });
+      res.json(result.user);
+    },
+    me(req, res) {
+      res.json(req.user);
+    },
+    async logout(req, res) {
+      await auth.logout(req.sessionToken);
+      res.clearCookie("climatic_session", { ...cookieOptions, httpOnly: true });
+      res.clearCookie("XSRF-TOKEN", { ...cookieOptions, path: "/" });
+      res.status(204).end();
+    },
+  };
+}
+module.exports = { createAuthController };
