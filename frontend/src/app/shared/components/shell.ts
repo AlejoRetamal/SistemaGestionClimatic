@@ -8,8 +8,14 @@ import { errorMessage } from '../error-message';
   standalone: true,
   imports: [RouterLink, RouterOutlet],
   template: ` <header class="navbar">
-      <a class="brand" routerLink="/inicio"
-        ><span class="brand-small">C</span> Climatic
+      <a class="brand" routerLink="/inicio" aria-label="Climatic SRL — Inicio"
+        ><img
+          class="brand-logo navbar-logo"
+          src="/logo-climatic.png"
+          alt="Climatic SRL"
+          width="1722"
+          height="490"
+        />
         <span class="brand-sub">Gestión interna</span></a
       >
       <nav aria-label="Navegación principal">

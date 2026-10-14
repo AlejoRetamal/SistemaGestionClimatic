@@ -10,8 +10,13 @@ import { errorMessage } from '../../shared/error-message';
   imports: [ReactiveFormsModule],
   template: ` <main class="login-page">
     <section class="login-intro">
-      <span class="brand-mark">C</span>
-      <p class="eyebrow">CLIMATIC SRL</p>
+      <img
+        class="brand-logo login-logo"
+        src="/logo-climatic.png"
+        alt="Climatic SRL"
+        width="1722"
+        height="490"
+      />
       <h1>Tu espacio de trabajo.</h1>
       <p>Gestión interna de mantenimiento y operaciones.</p>
     </section>
