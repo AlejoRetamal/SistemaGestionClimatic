@@ -91,4 +91,13 @@ describe('Maintenance menu and form navigation', () => {
     const harness = await RouterTestingHarness.create(base + '/maquinas/listado');
     expect(harness.routeNativeElement!.querySelectorAll('.page-heading a').length).toBe(0);
   });
+  it('keeps every creation screen accessible from its owning menu', async () => {
+    const harness = await RouterTestingHarness.create();
+    for (const [path, menu] of [...catalogs, ['maquinas', 'maquinas']]) {
+      await harness.navigateByUrl(base + '/' + menu);
+      expect(
+        harness.routeNativeElement!.querySelector(`a[href="${base}/${path}/nueva"]`),
+      ).not.toBeNull();
+    }
+  });
 });

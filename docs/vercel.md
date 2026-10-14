@@ -9,7 +9,7 @@ Los proyectos anteriores `tal-como-eres` y `java` se dieron de baja por indicaci
 
 ## Configuración
 
-Cada carpeta tiene su propio `vercel.json`. El backend exporta una instancia Express desde `backend/app.js`, usa Node 24 y ejecuta las funciones en `gru1`. `src/runtime.js` comparte la composición con el servidor local y crea el pool de forma diferida. El frontend ejecuta sus 44 pruebas antes de cada build y compila Angular a `dist/frontend/browser` y resuelve rutas directas de la SPA.
+Cada carpeta tiene su propio `vercel.json`. El backend exporta una instancia Express desde `backend/app.js`, usa Node 24 y ejecuta las funciones en `gru1`. `src/runtime.js` comparte la composición con el servidor local y crea el pool de forma diferida. El frontend ejecuta sus 63 pruebas antes de cada build y compila Angular a `dist/frontend/browser` y resuelve rutas directas de la SPA.
 
 El frontend reescribe `/api/*` hacia el backend. El navegador usa una sola dirección: las cookies `Secure`, `HttpOnly` y `SameSite=Strict` funcionan bajo el dominio de la aplicación. `APP_ORIGIN` debe ser exactamente `https://climatic-srl-frontend.vercel.app`. Todas las respuestas de la API llevan `Cache-Control: no-store`.
 
@@ -17,18 +17,13 @@ Las variables de Supabase se configuraron únicamente en **Production del backen
 
 `backend/.env.local` y `.vercel/` están ignorados por Git. Los archivos `.vercelignore` excluyen secretos, logs, código legado y artefactos locales del despliegue. Las carpetas locales `.vercel` guardan la asociación con cada proyecto; no se suben al repositorio.
 
-## Actualizar desde este equipo
+## Actualizaciones automáticas desde GitHub
 
-Desde la raíz del repositorio, después de probar los cambios:
+Ambos proyectos están conectados a `AlejoRetamal/SistemaGestionClimatic`, rama de producción `main`. El proyecto del backend usa Root Directory `backend` y el del frontend `frontend`.
 
-```powershell
-# En este equipo Windows, la CLI requiere el almacén de certificados del sistema.
-$env:NODE_USE_SYSTEM_CA='1'
-vercel deploy --prod --yes --cwd backend
-vercel deploy --prod --yes --cwd frontend
-```
+Al subir cambios a `main`, Vercel crea los despliegues correspondientes. El frontend ejecuta `npm test && npm run build`; solo una compilación exitosa reemplaza la versión pública. Para actualizar, probá el cambio, creá el commit y ejecutá `git push origin main`.
 
-Este despliegue se realizó con la CLI. No se configuró una integración Git que publique automáticamente cada push. Desde otro equipo hay que iniciar sesión y vincular las carpetas a los mismos proyectos con `vercel link --project ... --cwd ... --yes`.
+Los primeros despliegues se hicieron por CLI. La integración Git ya está habilitada; no es necesario ejecutar un despliegue manual después de cada push. Las variables de producción permanecen en Vercel y no se versionan. Para volver a publicar únicamente por un cambio de variables, usá Redeploy sobre el último despliegue del proyecto en el panel.
 
 Para volver a cargar las variables privadas sin poner secretos en argumentos de terminal:
 
@@ -50,7 +45,7 @@ Angular se actualizó dentro de la rama 21.2 para resolver los avisos detectados
 
 ## Verificación
 
-- 42 pruebas de backend y 44 de frontend, más `npm run test:postgres` en un clúster temporal.
+- 42 pruebas de backend y 63 de frontend, más `npm run test:postgres` en un clúster temporal.
 - Prueba pública de rutas Angular, `/api/health`, rechazo de acceso anónimo y ausencia de caché de la API.
 - `node scripts/check-vercel.js --temporary-employee` desde backend crea un empleado sintético, verifica login, cookies, sesión, CSRF, logout y lecturas de mantenimiento a través del dominio del frontend. Elimina su empleado y sesiones al terminar. No consulta PIN de empleados existentes ni escribe datos de mantenimiento; la secuencia de IDs puede avanzar.
 
