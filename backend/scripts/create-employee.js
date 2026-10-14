@@ -1,11 +1,14 @@
 const readline = require("node:readline/promises");
 const { Writable } = require("node:stream");
 const { localDatabase } = require("./local-database");
+const { supabaseDatabase } = require("./supabase-database");
 const { hashPin, pinLookup, validPin } = require("../src/services/pin.service");
 const { MODULES_BY_ROLE } = require("../src/config/permissions");
 
 async function main() {
-  const { db, config } = localDatabase();
+  const { db, config } = process.argv.includes("--supabase")
+    ? supabaseDatabase()
+    : localDatabase();
   let hidden = false;
   const output = new Writable({
     write(chunk, encoding, callback) {
@@ -46,7 +49,7 @@ async function main() {
         pinLookup(pin, config.pinSecret),
       ],
     );
-    console.log("Empleado creado en la nueva base local.");
+    console.log("Empleado creado en la base configurada.");
   } finally {
     prompt.close();
     await db.close();
@@ -56,7 +59,7 @@ main().catch((error) => {
   console.error(
     error.code === "23505"
       ? "Ese PIN ya está asignado. Elegí otro."
-      : "No se pudo crear el empleado. Revisá los datos y la configuración de la nueva base local.",
+      : "No se pudo crear el empleado. Revisá los datos, la configuración y la migración de autenticación.",
   );
   process.exitCode = 1;
 });

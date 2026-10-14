@@ -3,6 +3,9 @@ export function planesCatalog(type: 'preventivos' | 'predictivos'): CatalogDefin
   return {
     endpoint: 'planes/' + type,
     path: '/inicio/mantenimiento/planes/' + type,
+    parentPath: '/inicio/mantenimiento/planes',
+    parentLabel: 'Planes de mantenimiento',
+    createFromMenuOnly: true,
     title: 'Planes ' + type,
     singular: 'plan',
     newLabel: 'Nuevo plan',

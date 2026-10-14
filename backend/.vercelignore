@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+*.log
+legacy/
+sql/
+scripts/
+test/
+node_modules/
+.vercel/

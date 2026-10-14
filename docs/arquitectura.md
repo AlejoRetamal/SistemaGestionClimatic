@@ -1,6 +1,6 @@
 # Arquitectura
 
-El mantenimiento activo está documentado en [mantenimiento.md](mantenimiento.md). Reutiliza autenticación y navegación e incorpora servicios operativos sobre el MySQL local existente, sin cambios de esquema. La implementación PostgreSQL de autenticación se conserva para una eventual base independiente; el mantenimiento nuevo no usa ese adaptador.
+El mantenimiento activo está documentado en [mantenimiento.md](mantenimiento.md). Autenticación y operaciones funcionan con PostgreSQL/Supabase o con MySQL local. [supabase.md](supabase.md) describe la configuración y la migración explícita del esquema traducido. PostgreSQL comparte un pool entre autenticación y mantenimiento; su adaptador usa parámetros, `RETURNING`, `ON CONFLICT` y transacciones con una conexión dedicada. Normaliza IDs/decimales como números y conserva fechas locales como strings.
 
 ## Adaptación provisional a MySQL local
 
@@ -30,7 +30,7 @@ backend/
 
 Los servicios reciben el adaptador de base de datos. El pool se crea de forma diferida, solo ante una operación habilitada explícitamente. No se usa el `.env` antiguo ni `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` o `DATABASE_URL`: solo `APP_*` en `.env.local` o el entorno del proceso.
 
-Los controladores antiguos permanecen archivados. Los endpoints nuevos de mantenimiento usan el esquema MySQL existente con validaciones, permisos y transacciones; no se montan los controladores anteriores.
+Los controladores antiguos permanecen archivados. Los endpoints nuevos de mantenimiento usan el esquema de mantenimiento con validaciones, permisos y transacciones; no se montan los controladores anteriores.
 
 ## Autenticación
 
@@ -41,13 +41,13 @@ Se conserva la decisión del usuario: **PIN único, sin email para ingresar**. E
 - Cookie de sesión `HttpOnly`, `SameSite=Strict`, `Secure` en producción y vencimiento de 8 horas por defecto, configurable.
 - CSRF en cookie legible por Angular y encabezado `X-CSRF-Token` para cambios autenticados.
 - Se comprueba empleado activo, vencimiento y rol actual en cada petición protegida.
-- Login limitado a 10 intentos por IP cada 15 minutos, incluidos intentos exitosos. Contador en memoria para una sola instancia; un despliegue con múltiples instancias necesita almacenamiento compartido o límite en el proxy.
+- Login limitado a 10 intentos por IP cada 15 minutos, incluidos intentos exitosos. En desarrollo el contador está en memoria; en producción PostgreSQL usa la tabla privada `login_attempts`, compartida entre instancias.
 - Respuestas de autenticación con `Cache-Control: no-store`. No se devuelven PIN, hashes ni token de sesión en JSON.
 - No se guarda identidad ni permisos en `localStorage`. La aplicación recupera el usuario mediante `/api/auth/me` antes de navegar.
 
 Los hashes protegen el almacenamiento, pero un PIN corto tiene poca entropía. La política de longitud y el bloqueo por empleado quedan pendientes de definición; no se impuso una longitud nueva ni un bloqueo permanente.
 
-Las sesiones expiradas se rechazan siempre. Para un futuro despliegue con PostgreSQL, queda pendiente programar limpieza de filas expiradas.
+Las sesiones expiradas se rechazan siempre. En PostgreSQL queda pendiente programar limpieza de filas expiradas.
 
 ## Permisos
 
@@ -70,7 +70,7 @@ Por instrucción del usuario, las acciones de mantenimiento conservan el permiso
 | POST   | `/api/auth/login`      | `{ "pin": "..." }`; cookies y usuario público                                        |
 | GET    | `/api/auth/me`         | Usuario actual o 401                                                                 |
 | POST   | `/api/auth/logout`     | Requiere sesión y CSRF; revoca sesión, borra cookies                                 |
-| GET    | `/api/modulos/:modulo` | Cuatro rutas concretas; requiere sesión y permiso; mantenimiento disponible en MySQL |
+| GET    | `/api/modulos/:modulo` | Cuatro rutas concretas; requiere sesión y permiso; mantenimiento disponible en PostgreSQL y MySQL |
 
 La API completa de mantenimiento se detalla en [mantenimiento.md](mantenimiento.md).
 
@@ -101,10 +101,10 @@ frontend/src/app/
     registros/        ejecución, historial y detalle
 ```
 
-Los formularios/listados de catálogos reutilizan `shared/catalog`. Las cuatro rutas base existen y las tarjetas de mantenimiento navegan a las funciones implementadas. El mantenimiento distingue explícitamente “Alta” de “Registrar”; el registro extraordinario explica la limitación del modelo.
+Los formularios/listados de catálogos reutilizan `shared/catalog`. Las cuatro rutas base existen y las tarjetas de mantenimiento navegan a las funciones implementadas. Los submenús agrupan Tareas, Máquinas, Planes y Órdenes. El mantenimiento distingue explícitamente las altas de definiciones del registro de tareas programadas; se retiró la pantalla de registro extraordinario.
 
 El login siempre lleva a `/inicio`. Las rutas `/inicio/administracion`, `/inicio/produccion`, `/inicio/mantenimiento` y `/inicio/comercial` tienen guards. Existe tratamiento de acceso restringido, página inexistente, errores HTTP y carga.
 
 ## Despliegue posterior
 
-Servir Angular y `/api` bajo el mismo origen HTTPS mediante un proxy. La configuración de desarrollo conserva el origen `http://localhost:4200`. No configurar `trust proxy` indiscriminadamente: el límite por IP depende de la topología real. No hay hosting ni despliegue automático en esta fase.
+Servir Angular y `/api` bajo el mismo origen HTTPS mediante un proxy. La configuración de desarrollo conserva el origen `http://localhost:4200`. No configurar `trust proxy` indiscriminadamente: el límite por IP depende de la topología real. El despliegue vigente por CLI está documentado en [vercel.md](vercel.md).

@@ -2,14 +2,14 @@ const { Router } = require("express");
 const { createAuthController } = require("../controllers/auth.controller");
 const { authenticate } = require("../middlewares/authenticate");
 const { loginLimit } = require("../middlewares/login-limit");
-function authRoutes(auth, config) {
+function authRoutes(auth, config, loginLimiter = loginLimit()) {
   const router = Router();
   const controller = createAuthController(auth, config);
   router.use((req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
   });
-  router.post("/login", loginLimit(), controller.login);
+  router.post("/login", loginLimiter, controller.login);
   router.get("/me", authenticate(auth), controller.me);
   router.post("/logout", authenticate(auth), controller.logout);
   return router;

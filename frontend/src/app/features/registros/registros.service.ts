@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Registro, RegistroDetalle, RegistroInput } from './registro.model';
 import { Tarea } from '../tareas/tarea.model';
-import { TareaExtraordinaria } from '../tareas-extraordinarias/extraordinaria.model';
 @Injectable({ providedIn: 'root' })
 export class RegistrosService {
   private readonly http = inject(HttpClient);
@@ -17,8 +16,5 @@ export class RegistrosService {
   }
   tasks() {
     return this.http.get<Tarea[]>('/api/tareas');
-  }
-  extraordinary() {
-    return this.http.get<TareaExtraordinaria[]>('/api/tareas-extraordinarias');
   }
 }

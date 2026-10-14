@@ -1,6 +1,6 @@
 # Climatic SRL · Gestión interna
 
-Aplicación existente ampliada con Angular standalone, Reactive Forms, Express y el MySQL local `datos_climatic`.
+Aplicación existente ampliada con Angular standalone, Reactive Forms, Express y PostgreSQL/Supabase, con compatibilidad para el MySQL local `datos_climatic`.
 
 ## Estado actual
 
@@ -13,11 +13,13 @@ Se conservan el ingreso con **PIN único**, las sesiones, los roles, el menú `/
 - Órdenes: alta, edición mientras están abiertas y cierre.
 - Historial y detalle de trabajos; registro de tareas con varios repuestos en una transacción.
 
-El registro de ejecuciones extraordinarias tiene una pantalla que explica la relación faltante en el modelo. Las correcciones del historial quedan pendientes. Administración, Producción y Comercial mantienen sus pantallas base.
+El menú agrupa las altas comunes y extraordinarias en Tareas; Máquinas tiene alta, baja y listado; Planes y Órdenes tienen sus propios submenús. Repuestos e Inventario comparten un acceso. Solo se ofrece el registro de tareas programadas, desde donde se consulta el historial. Las ejecuciones extraordinarias y las correcciones del historial quedan pendientes. Administración, Producción y Comercial mantienen sus pantallas base.
+
+En producción: **https://climatic-srl-frontend.vercel.app**. [Despliegue y actualizaciones en Vercel](docs/vercel.md).
 
 ## Ejecutar
 
-Requisitos: Node.js 24, npm y MySQL local con el esquema existente `datos_climatic`. En dos terminales desde la raíz del proyecto:
+Requisitos: Node.js 24, npm y la base configurada. Para Supabase, seguí primero [conexión y migración del login](docs/supabase.md). En dos terminales desde la raíz del proyecto:
 
 ```powershell
 cd backend
@@ -31,11 +33,11 @@ npm ci
 npm start
 ```
 
-Abrir **http://localhost:4200**, ingresar el PIN de un empleado activo y entrar en **Mantenimiento**. Al reiniciar el backend se cierran las sesiones y hay que volver a ingresar.
+Abrir **http://localhost:4200**, ingresar el PIN de un empleado activo y entrar en **Mantenimiento**. Las sesiones de PostgreSQL sobreviven al reinicio; en MySQL provisional se cierran.
 
-La configuración local está en `backend/.env.local` y no se versiona. El backend carga solamente variables `APP_*`; no carga el `.env` antiguo. La configuración actual usa `APP_DATABASE_DRIVER=mysql-local`, `APP_DATABASE_ENABLED=true`, host `127.0.0.1` y esquema `datos_climatic`. Este modo solo admite desarrollo y ese esquema local.
+La configuración local está en `backend/.env.local` y no se versiona. El backend carga solamente variables `APP_*`; no carga el `.env` antiguo. El modo provisional usa `APP_DATABASE_DRIVER=mysql-local`, `APP_DATABASE_ENABLED=true`, host `127.0.0.1` y esquema `datos_climatic`. Este modo solo admite desarrollo y ese esquema local.
 
-La autenticación consulta empleados sin modificarlos. Las operaciones de mantenimiento **sí escriben** en las tablas locales cuando se guardan formularios. No hay migraciones al arrancar, cambios automáticos de esquema ni acceso a una base remota de Jorge.
+En MySQL la autenticación consulta empleados sin modificarlos. En Supabase se prepara explícitamente el login con `npm run db:prepare-supabase`. Las operaciones de mantenimiento **sí escriben** en las tablas locales cuando se guardan formularios. No hay migraciones al arrancar, cambios automáticos de esquema ni acceso a una base remota de Jorge.
 
 Sin configuración habilitada, la app muestra el error de base deshabilitada al ingresar. No hay PIN de demostración ni acceso alternativo.
 
@@ -68,9 +70,11 @@ Este último comando crea datos temporales dentro de una transacción y ejecuta 
 La carpeta `docs` contiene documentación para desarrollo; no es necesaria para abrir la aplicación.
 
 - [Mantenimiento: rutas, API, reglas y pruebas](docs/mantenimiento.md).
+- [Conexión a Supabase y preparación de PIN/sesiones](docs/supabase.md).
 - [Arquitectura y autenticación](docs/arquitectura.md).
 - [Decisiones confirmadas y pendientes](docs/decisiones-pendientes.md).
 - [Conservación y migración de datos](docs/migracion-datos.md).
+- [Traducción del script actual a PostgreSQL y pruebas aisladas](backend/sql/postgresql/README.md).
 - [Propuesta PostgreSQL anterior](docs/esquema-postgresql.sql), no ejecutada sobre MySQL.
 
-Los scripts `db:migrate` y `employee:create` pertenecen a la preparación previa de autenticación PostgreSQL y rechazan el modo MySQL. El mantenimiento actual usa el esquema MySQL existente; esos scripts no lo instalan ni lo migran. El código anterior permanece archivado en `backend/legacy/mysql` y `frontend/legacy`, fuera de la aplicación activa.
+El script `db:migrate` pertenece al instalador anterior para una base local vacía. Para Supabase se usan `db:check-supabase` y `db:prepare-supabase`; `employee:create -- --supabase` permite altas con PIN oculto. `npm run test:postgres` verifica el backend sobre una instancia PostgreSQL temporal. El código anterior permanece archivado en `backend/legacy/mysql` y `frontend/legacy`, fuera de la aplicación activa.

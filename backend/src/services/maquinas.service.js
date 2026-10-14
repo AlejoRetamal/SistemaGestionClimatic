@@ -36,7 +36,7 @@ function createMaquinasService(db) {
     get,
     async create(input) {
       const data = machineData(input);
-      const result = await db.query(
+      const result = await db.insert(
         "INSERT INTO maquinas (nombre, nombre_corto, potencia_instalada, potencia_demandada, observaciones) VALUES (?, ?, ?, ?, ?)",
         data,
       );

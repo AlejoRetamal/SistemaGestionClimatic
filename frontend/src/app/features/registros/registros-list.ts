@@ -14,7 +14,7 @@ import { errorMessage } from '../../shared/error-message';
     <div class="page-heading">
       <h1>Historial de trabajos</h1>
       <a class="button primary" routerLink="/inicio/mantenimiento/registrar-tarea"
-        >Registrar tarea</a
+        >Registrar tarea programada</a
       >
     </div>
     <div class="toolbar">

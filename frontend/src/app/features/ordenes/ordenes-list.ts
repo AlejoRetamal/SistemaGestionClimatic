@@ -10,10 +10,9 @@ import { errorMessage } from '../../shared/error-message';
   standalone: true,
   imports: [RouterLink, DatePipe],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
+    <a class="back-link" routerLink="/inicio/mantenimiento/ordenes">← Órdenes de mantenimiento</a>
     <div class="page-heading">
       <h1>Órdenes de mantenimiento</h1>
-      <a class="button primary" routerLink="nueva">+ Nueva orden</a>
     </div>
     <div class="toolbar">
       <label for="state">Estado</label
@@ -33,9 +32,6 @@ import { errorMessage } from '../../shared/error-message';
       <p class="error" role="alert">
         {{ error() }} <button class="secondary" (click)="load()">Recargar</button>
       </p>
-    }
-    @if (success()) {
-      <p class="success" role="status">{{ success() }}</p>
     }
     @if (loading()) {
       <p class="notice" role="status">Cargando órdenes…</p>
@@ -67,7 +63,10 @@ import { errorMessage } from '../../shared/error-message';
                 <td>
                   @if (order.activo) {
                     <div class="actions">
-                      <a class="button secondary" [routerLink]="[order.id, 'editar']">Editar</a
+                      <a
+                        class="button secondary"
+                        [routerLink]="['/inicio/mantenimiento/ordenes', order.id, 'editar']"
+                        >Editar</a
                       ><button class="danger" [disabled]="busy()" (click)="close(order)">
                         Cerrar orden
                       </button>
@@ -83,6 +82,9 @@ import { errorMessage } from '../../shared/error-message';
           </tbody>
         </table>
       </div>
+    }
+    @if (success()) {
+      <p class="success" role="status">{{ success() }}</p>
     }
   `,
 })

@@ -3,18 +3,25 @@ import { tareasCatalog } from '../tareas/tareas.config';
 import { extraordinariasCatalog } from '../tareas-extraordinarias/extraordinarias.config';
 import { planesCatalog } from '../planes/planes.config';
 import { ordenesCatalog } from '../ordenes/ordenes.config';
+import { MAINTENANCE_MENUS } from './maintenance-links';
 export const mantenimientoRoutes: Routes = [
+  ...(
+    [
+      ['tareas/menu', 'tareas'],
+      ['maquinas', 'maquinas'],
+      ['planes', 'planes'],
+      ['ordenes', 'ordenes'],
+    ] as const
+  ).map(([path, key]) => ({
+    path,
+    pathMatch: 'full' as const,
+    data: { menu: MAINTENANCE_MENUS[key] },
+    loadComponent: () => import('./maintenance-menu').then((m) => m.MaintenanceMenuComponent),
+  })),
   {
     path: 'registrar-tarea',
     loadComponent: () =>
       import('../registros/registrar-tarea').then((m) => m.RegistrarTareaComponent),
-  },
-  {
-    path: 'registrar-tarea-extraordinaria',
-    loadComponent: () =>
-      import('../registros/registrar-extraordinaria').then(
-        (m) => m.RegistrarExtraordinariaComponent,
-      ),
   },
   {
     path: 'registros',
@@ -27,7 +34,7 @@ export const mantenimientoRoutes: Routes = [
       import('../registros/registro-detail').then((m) => m.RegistroDetailComponent),
   },
   {
-    path: 'ordenes',
+    path: 'ordenes/listado',
     loadComponent: () => import('../ordenes/ordenes-list').then((m) => m.OrdenesListComponent),
   },
   ...['ordenes/nueva', 'ordenes/:id/editar'].map((path) => ({
@@ -36,7 +43,6 @@ export const mantenimientoRoutes: Routes = [
     loadComponent: () =>
       import('../../shared/catalog/catalog-page').then((m) => m.CatalogPageComponent),
   })),
-  { path: 'planes', pathMatch: 'full', redirectTo: 'planes/preventivos' },
   ...(['preventivos', 'predictivos'] as const).flatMap((type) =>
     ['', '/nueva', '/:id/editar'].map((suffix) => ({
       path: 'planes/' + type + suffix,
@@ -70,7 +76,12 @@ export const mantenimientoRoutes: Routes = [
     loadComponent: () => import('../inicio/module-page').then((m) => m.ModulePageComponent),
   },
   {
-    path: 'maquinas',
+    path: 'maquinas/listado',
+    loadComponent: () => import('../maquinas/maquinas-list').then((m) => m.MaquinasListComponent),
+  },
+  {
+    path: 'maquinas/baja',
+    data: { baja: true },
     loadComponent: () => import('../maquinas/maquinas-list').then((m) => m.MaquinasListComponent),
   },
   {

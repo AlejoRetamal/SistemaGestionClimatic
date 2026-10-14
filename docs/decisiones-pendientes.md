@@ -15,7 +15,8 @@
 
 ## Pendientes de modelo o negocio
 
-- **Ejecución extraordinaria:** la definición solo tiene nombre y descripción; falta relación de ejecución con esa definición y una máquina. La UI informa la limitación y no guarda ejecuciones ficticias. Se requiere acordar el modelo antes de proponer SQL.
+- **Ejecución extraordinaria:** la definición solo tiene nombre y descripción; falta relación de ejecución con esa definición y una máquina. Por pedido del usuario se retiró la pantalla de registro extraordinario; las altas de definiciones siguen disponibles en el submenú Tareas. Se requiere acordar el modelo antes de proponer SQL.
+- **Planes correctivos:** aparecen en la referencia visual, pero el modelo actual solo tiene planes preventivos y predictivos. El submenú ofrece las operaciones existentes; el alta de correctivos requiere definir su modelo.
 - **Correcciones históricas:** auditoría de cambios, efecto sobre lecturas posteriores, planes y existencias. No se exponen PUT ni DELETE de registros.
 - **Primer servicio y correcciones de lectura:** la vista existente usa el máximo histórico de horómetro y, sin registros, el horómetro actual como base. No equivale a la última lectura cronológica; no se alteró esta regla.
 - Permisos por acción más específicos, si se necesitan posteriormente.

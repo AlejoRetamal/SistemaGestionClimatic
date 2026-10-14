@@ -1,4 +1,4 @@
-# Mantenimiento sobre MySQL local
+# Mantenimiento sobre PostgreSQL/Supabase y MySQL local
 
 ## Estructura reutilizada
 
@@ -10,20 +10,19 @@ El backend mantiene rutas → controladores → servicios. `config/mysql-db.js` 
 
 Todas están bajo `/inicio/mantenimiento` y heredan los guards de autenticación y permiso de mantenimiento.
 
-| Pantalla                                        | Ruta relativa                                                                                 |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Máquinas                                        | `maquinas`, `maquinas/nueva`, `maquinas/:id/editar`                                           |
-| Horómetro manual                                | `horometro`                                                                                   |
-| Repuestos e inventario                          | `repuestos`, `repuestos/nuevo`, `repuestos/:id/editar`                                        |
-| Tareas                                          | `tareas`, `tareas/nueva`, `tareas/:id/editar`                                                 |
-| Definiciones extraordinarias                    | `tareas-extraordinarias`, `tareas-extraordinarias/nueva`, `tareas-extraordinarias/:id/editar` |
-| Planes                                          | `planes` redirige a `planes/preventivos`; cada tipo tiene listado, `nueva` y `:id/editar`     |
-| Órdenes                                         | `ordenes`, `ordenes/nueva`, `ordenes/:id/editar`                                              |
-| Historial                                       | `registros`, `registros/:id`                                                                  |
-| Ejecución normal                                | `registrar-tarea`                                                                             |
-| Ejecución extraordinaria, limitación del modelo | `registrar-tarea-extraordinaria`                                                              |
+| Pantalla                       | Ruta relativa                                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Máquinas                       | `maquinas` (menú), `maquinas/nueva`, `maquinas/baja`, `maquinas/listado`, `maquinas/:id/editar`          |
+| Horómetro manual               | `horometro`                                                                                              |
+| Repuestos e inventario         | `repuestos`, `repuestos/nuevo`, `repuestos/:id/editar`                                                   |
+| Tareas                         | `tareas/menu` (altas y consultas comunes/extraordinarias), `tareas`, `tareas/nueva`, `tareas/:id/editar` |
+| Definiciones extraordinarias   | `tareas-extraordinarias`, `tareas-extraordinarias/nueva`, `tareas-extraordinarias/:id/editar`            |
+| Planes                         | `planes` (menú); `planes/preventivos` y `planes/predictivos` tienen listado, `nueva` y `:id/editar`      |
+| Órdenes                        | `ordenes` (menú), `ordenes/listado`, `ordenes/nueva`, `ordenes/:id/editar`                               |
+| Historial                      | `registros`, `registros/:id`                                                                             |
+| Registro de tareas programadas | `registrar-tarea`, con acceso al historial                                                               |
 
-Las tarjetas navegan a estas pantallas. Los listados muestran nombres de máquinas, tareas, empleados y proveedores; los identificadores quedan para las relaciones y las URLs.
+El menú principal tiene seis accesos: Registro de tareas programadas, Tareas, Planes de mantenimiento, Repuestos / Inventario, Órdenes de mantenimiento y Máquinas. La baja de máquinas muestra únicamente equipos activos y conserva la confirmación. El horómetro se accede desde el listado de máquinas. Se retiró la ruta de registro extraordinario; no hay un registro de insumos independiente. Los consumos siguen formando parte del registro de trabajo. Los listados muestran nombres; los identificadores quedan para las relaciones y las URLs.
 
 ## API
 
@@ -74,3 +73,9 @@ La vista usa `MAX(medicion_horometro)` y `MAX(duracion_fin)` independientemente;
 - `npm test` en frontend: sesión, permisos incluyendo rutas hijas, formulario de ejecución, confirmación de reducción, consumos duplicados, stock, horarios y reintento.
 - `npm run build` en frontend: compilación de todas las pantallas y templates.
 - `node scripts/check-maintenance.js --rollback-local` en backend: prueba HTTP integrada sobre el MySQL local con datos temporales y rollback final. No conserva filas; puede avanzar AUTO_INCREMENT. Cubre bajas/cierres por triggers, CRUD, FK, proveedores, planes, stock exacto y fallo intermedio de consumo. El script exige la bandera y rechaza otro host/esquema.
+
+La adaptación PostgreSQL conserva estas reglas. Ver [Supabase](supabase.md) para configuración, migración de autenticación y pruebas completas en un clúster temporal con `npm run test:postgres`.
+
+## Navegación de altas y ediciones
+
+Las altas de tareas, planes, órdenes y máquinas se abren desde su menú, y todos los enlaces de regreso (incluido el mensaje posterior al guardado) vuelven a ese menú. Los listados no repiten accesos de alta. Las ediciones regresan al listado de su módulo. Repuestos mantiene el alta desde su pantalla unificada de inventario.

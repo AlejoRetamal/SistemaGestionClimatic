@@ -20,6 +20,8 @@ function readConfig(source = process.env) {
     databaseDriver: source.APP_DATABASE_DRIVER || "postgres",
     serviceMarginPercent: Number(source.APP_SERVICE_MARGIN_PERCENT ?? 10),
     databaseUrl: source.APP_DATABASE_URL || "",
+    databasePoolMax: positive("APP_DATABASE_POOL_MAX", 3),
+    databaseSslCa: source.APP_DATABASE_SSL_CA || "",
     mysql: {
       host: source.APP_MYSQL_HOST || "127.0.0.1",
       port: positive("APP_MYSQL_PORT", 3306),
@@ -30,6 +32,7 @@ function readConfig(source = process.env) {
     pinSecret: source.APP_PIN_SECRET || "",
     sessionHours: positive("APP_SESSION_HOURS", 8),
     production,
+    vercel: source.VERCEL === "1",
     secureCookie: production || source.APP_COOKIE_SECURE === "true",
   };
   const origin = new URL(config.origin);

@@ -9,11 +9,12 @@ const { repuestosRoutes } = require("./routes/repuestos.routes");
 const { catalogRoutes } = require("./routes/catalog.routes");
 const { ordenesRoutes } = require("./routes/ordenes.routes");
 const { registrosRoutes } = require("./routes/registros.routes");
-function createApp({ auth, config, maintenance }) {
+function createApp({ auth, config, maintenance, loginLimiter }) {
   const app = express();
   app.disable("x-powered-by");
   app.use(cors({ origin: config.origin, credentials: true }));
   app.use((req, res, next) => {
+    res.set("Cache-Control", "no-store");
     res.set("X-Content-Type-Options", "nosniff");
     if (
       !["GET", "HEAD", "OPTIONS"].includes(req.method) &&
@@ -35,7 +36,7 @@ function createApp({ auth, config, maintenance }) {
       phase: maintenance ? 2 : 1,
     }),
   );
-  app.use("/api/auth", authRoutes(auth, config));
+  app.use("/api/auth", authRoutes(auth, config, loginLimiter));
   if (maintenance) {
     app.use(
       "/api/maquinas",

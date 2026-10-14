@@ -2,6 +2,9 @@ import { CatalogDefinition } from '../../shared/catalog/catalog.model';
 export const tareasCatalog: CatalogDefinition = {
   endpoint: 'tareas',
   path: '/inicio/mantenimiento/tareas',
+  parentPath: '/inicio/mantenimiento/tareas/menu',
+  parentLabel: 'Tareas',
+  createFromMenuOnly: true,
   title: 'Tareas de mantenimiento',
   singular: 'tarea',
   newLabel: 'Nueva tarea',

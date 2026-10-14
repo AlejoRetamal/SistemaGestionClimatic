@@ -32,7 +32,7 @@ function createTareasService(db) {
     list: () => db.query(select + " ORDER BY t.nombre,t.id"),
     get,
     async create(input) {
-      const result = await db.query(
+      const result = await db.insert(
         "INSERT INTO tareas (nombre,descripcion,maquina_id,horas_parada,corte_tension) VALUES (?,?,?,?,?)",
         taskData(input),
       );
@@ -75,7 +75,7 @@ function createTareasService(db) {
         ]);
         if (!result.affectedRows) throw v.fail(404, "No se encontró la tarea.");
       } catch (error) {
-        if (error.code === "ER_ROW_IS_REFERENCED_2")
+        if (["ER_ROW_IS_REFERENCED_2", "23503", "23001"].includes(error.code))
           throw v.fail(
             409,
             "No se puede eliminar esta tarea porque ya tiene registros o planes asociados.",

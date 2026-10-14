@@ -10,18 +10,13 @@ import { nonBlank, decimalPlaces } from '../../shared/form-validators';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento/maquinas">← Máquinas</a>
+    <a class="back-link" [routerLink]="backPath">← {{ id ? 'Listado de máquinas' : 'Máquinas' }}</a>
     <h1>{{ id ? 'Editar máquina' : 'Nueva máquina' }}</h1>
     @if (loading()) {
       <p class="notice" role="status">Cargando máquina…</p>
     }
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
-    }
-    @if (success()) {
-      <p class="success" role="status">
-        {{ success() }} <a routerLink="/inicio/mantenimiento/maquinas">Volver al listado</a>
-      </p>
     }
     @if (ready()) {
       <form class="panel form-panel" [formGroup]="form" (ngSubmit)="save()">
@@ -76,10 +71,16 @@ import { nonBlank, decimalPlaces } from '../../shared/form-validators';
           <div class="actions form-actions">
             <button class="primary" type="submit" [disabled]="saving() || created()">
               {{ saving() ? 'Guardando…' : 'Guardar máquina' }}</button
-            ><a class="button secondary" routerLink="/inicio/mantenimiento/maquinas">Volver</a>
+            ><a class="button secondary" [routerLink]="backPath">Volver</a>
           </div>
         </fieldset>
       </form>
+    }
+    @if (success()) {
+      <p class="success" role="status">
+        {{ success() }}
+        <a [routerLink]="backPath">{{ id ? 'Volver al listado' : 'Volver al menú' }}</a>
+      </p>
     }
   `,
 })
@@ -87,6 +88,7 @@ export class MaquinaFormComponent {
   private readonly api = inject(MaquinasService);
   private readonly destroyRef = inject(DestroyRef);
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || null;
+  readonly backPath = '/inicio/mantenimiento/maquinas' + (this.id ? '/listado' : '');
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly ready = signal(!this.id);

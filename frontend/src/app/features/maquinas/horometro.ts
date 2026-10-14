@@ -12,7 +12,9 @@ import { errorMessage } from '../../shared/error-message';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, DecimalPipe],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
+    <a class="back-link" routerLink="/inicio/mantenimiento/maquinas/listado"
+      >← Listado de máquinas</a
+    >
     <h1>Actualizar horómetro</h1>
     @if (loading()) {
       <p class="notice" role="status">Cargando máquinas…</p>
@@ -21,9 +23,6 @@ import { errorMessage } from '../../shared/error-message';
       <p class="error" role="alert">
         {{ error() }} <button class="secondary" (click)="load()">Recargar</button>
       </p>
-    }
-    @if (success()) {
-      <p class="success" role="status">{{ success() }}</p>
     }
     <form class="panel form-panel" [formGroup]="form" (ngSubmit)="save()">
       <fieldset [disabled]="loading() || saving()">
@@ -62,6 +61,9 @@ import { errorMessage } from '../../shared/error-message';
         </div>
       </fieldset>
     </form>
+    @if (success()) {
+      <p class="success" role="status">{{ success() }}</p>
+    }
   `,
 })
 export class HorometroComponent {

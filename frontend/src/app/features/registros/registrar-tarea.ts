@@ -24,20 +24,13 @@ function localNow(): string {
   imports: [ReactiveFormsModule, RouterLink, DecimalPipe],
   template: `
     <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
-    <h1>Registrar tarea</h1>
+    <h1>Registro de tareas programadas</h1>
     <p class="lead">Registrá un trabajo realizado y sus repuestos utilizados.</p>
     @if (loading()) {
       <p class="notice" role="status">Cargando tareas…</p>
     }
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
-    }
-    @if (savedId()) {
-      <div class="success" role="status">
-        Trabajo guardado correctamente.
-        <a [routerLink]="['/inicio/mantenimiento/registros', savedId()]">Ver detalle</a>
-        <button class="secondary" (click)="reset()">Registrar otro trabajo</button>
-      </div>
     }
     @if (ready()) {
       <form class="panel form-panel execution-form" [formGroup]="form" (ngSubmit)="save()">
@@ -176,6 +169,13 @@ function localNow(): string {
           </div>
         </fieldset>
       </form>
+    }
+    @if (savedId()) {
+      <div class="success" role="status">
+        Trabajo guardado correctamente.
+        <a [routerLink]="['/inicio/mantenimiento/registros', savedId()]">Ver detalle</a>
+        <button class="secondary" (click)="reset()">Registrar otro trabajo</button>
+      </div>
     }
   `,
 })

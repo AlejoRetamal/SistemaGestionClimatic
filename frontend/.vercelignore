@@ -1,0 +1,8 @@
+.env
+.env.*
+*.log
+legacy/
+node_modules/
+dist/
+.angular/
+.vercel/

@@ -21,11 +21,6 @@ import { errorMessage } from '../../shared/error-message';
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }
-    @if (success()) {
-      <p class="success" role="status">
-        Repuesto guardado. <a routerLink="/inicio/mantenimiento/repuestos">Volver al listado</a>
-      </p>
-    }
     @if (ready()) {
       <form class="panel form-panel" [formGroup]="form" (ngSubmit)="save()">
         <fieldset [disabled]="saving() || created()">
@@ -96,6 +91,11 @@ import { errorMessage } from '../../shared/error-message';
           </div>
         </fieldset>
       </form>
+    }
+    @if (success()) {
+      <p class="success" role="status">
+        Repuesto guardado. <a routerLink="/inicio/mantenimiento/repuestos">Volver al listado</a>
+      </p>
     }
   `,
 })

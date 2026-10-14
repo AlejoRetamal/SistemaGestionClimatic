@@ -1,4 +1,6 @@
 -- PROPOSAL ONLY: not an executable migration for an existing database.
+-- Historical proposal. Translation of the current user-provided MySQL schema:
+-- backend/sql/postgresql/01-esquema.sql (see README in that directory).
 -- Auth tables are defined in backend/src/db/migrations/001_auth.sql.
 -- All additional tables below belong to later phases. Do not execute yet.
 

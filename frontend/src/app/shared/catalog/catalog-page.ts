@@ -17,16 +17,14 @@ import { errorMessage } from '../error-message';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   template: `
-    <a class="back-link" [routerLink]="editing ? definition.path : '/inicio/mantenimiento'"
-      >← {{ editing ? definition.title : 'Mantenimiento' }}</a
-    >
+    <a class="back-link" [routerLink]="backPath">← {{ backLabel }}</a>
     <div class="page-heading">
       <h1>
         {{
           editing ? (id ? 'Editar ' + definition.singular : definition.newLabel) : definition.title
         }}
       </h1>
-      @if (!editing) {
+      @if (!editing && !definition.createFromMenuOnly) {
         <a class="button primary" [routerLink]="definition.path + '/nueva'"
           >+ {{ definition.newLabel }}</a
         >
@@ -49,14 +47,6 @@ import { errorMessage } from '../error-message';
     }
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
-    }
-    @if (success()) {
-      <p class="success" role="status">
-        {{ success() }}
-        @if (editing) {
-          <a [routerLink]="definition.path">Volver al listado</a>
-        }
-      </p>
     }
     @if (loading()) {
       <p class="notice" role="status">Cargando información…</p>
@@ -115,7 +105,7 @@ import { errorMessage } from '../error-message';
             <div class="actions form-actions">
               <button class="primary" [disabled]="busy() || created()">
                 {{ busy() ? 'Guardando…' : 'Guardar' }}</button
-              ><a class="button secondary" [routerLink]="definition.path">Volver</a>
+              ><a class="button secondary" [routerLink]="backPath">Volver</a>
             </div>
           </fieldset>
         </form>
@@ -167,6 +157,14 @@ import { errorMessage } from '../error-message';
         </div>
       }
     }
+    @if (success()) {
+      <p class="success" role="status">
+        {{ success() }}
+        @if (editing) {
+          <a [routerLink]="backPath">{{ returnToMenu ? 'Volver al menú' : 'Volver al listado' }}</a>
+        }
+      </p>
+    }
   `,
 })
 export class CatalogPageComponent {
@@ -176,6 +174,15 @@ export class CatalogPageComponent {
   readonly definition = this.route.snapshot.data['catalog'] as CatalogDefinition;
   readonly editing = this.route.snapshot.data['mode'] === 'form';
   readonly id = Number(this.route.snapshot.paramMap.get('id')) || null;
+  readonly returnToMenu = this.editing && !this.id && this.definition.createFromMenuOnly === true;
+  readonly backPath =
+    this.editing && !this.returnToMenu
+      ? this.definition.path
+      : this.definition.parentPath || '/inicio/mantenimiento';
+  readonly backLabel =
+    this.editing && !this.returnToMenu
+      ? this.definition.title
+      : this.definition.parentLabel || 'Mantenimiento';
   readonly rows = signal<CatalogRow[]>([]);
   readonly options = signal<Record<string, CatalogOption[]>>({});
   readonly search = signal('');

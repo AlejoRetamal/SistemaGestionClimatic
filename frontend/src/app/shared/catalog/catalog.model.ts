@@ -20,6 +20,9 @@ export interface CatalogField {
 export interface CatalogDefinition {
   endpoint: string;
   path: string;
+  parentPath?: string;
+  parentLabel?: string;
+  createFromMenuOnly?: boolean;
   title: string;
   singular: string;
   newLabel: string;

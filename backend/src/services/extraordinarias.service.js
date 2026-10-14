@@ -21,7 +21,7 @@ function createExtraordinariasService(db) {
       ),
     get,
     async create(input) {
-      const result = await db.query(
+      const result = await db.insert(
         "INSERT INTO tareas_extraordinarias (nombre,descripcion) VALUES (?,?)",
         data(input),
       );

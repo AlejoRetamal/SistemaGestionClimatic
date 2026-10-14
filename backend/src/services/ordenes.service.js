@@ -27,7 +27,7 @@ function createOrdenesService(db) {
     get,
     async create(input, user) {
       const values = orderData(input);
-      const result = await db.query(
+      const result = await db.insert(
         "INSERT INTO ordenes_mantenimiento (descripcion,maquina_id,empleado_id) VALUES (?,?,?)",
         [...values, v.id(user.id, "Empleado")],
       );

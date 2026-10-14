@@ -156,7 +156,7 @@ function createRegistrosService(db) {
           if (!stocks.length || stocks[0].cantidad_actual < item.quantity)
             throw v.fail(409, `No hay stock suficiente de ${part.nombre}.`);
         }
-        const result = await tx.query(
+        const result = await tx.insert(
           "INSERT INTO registro_tareas (origen,operario_id,tarea_id,medicion_horometro,duracion_inicio,duracion_fin,orden_mantenimiento_id) VALUES ('Mantenimiento',?,?,?,?,?,?)",
           [
             v.id(user.id, "Operario"),

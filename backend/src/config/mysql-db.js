@@ -19,6 +19,9 @@ function createMysqlDatabase(config) {
     return pool;
   }
   return {
+    insert(sql, params) {
+      return this.query(sql, params);
+    },
     async query(sql, params = []) {
       const [rows] = await getPool().execute(sql, params);
       return rows;
@@ -26,6 +29,15 @@ function createMysqlDatabase(config) {
     async transaction(work) {
       const connection = await getPool().getConnection();
       const tx = {
+        insert(sql, params) {
+          return this.query(sql, params);
+        },
+        ensureInventory(id) {
+          return this.query(
+            "INSERT INTO inventario (repuesto_id) VALUES (?) ON DUPLICATE KEY UPDATE repuesto_id=VALUES(repuesto_id)",
+            [id],
+          );
+        },
         async query(sql, params = []) {
           const [rows] = await connection.execute(sql, params);
           return rows;

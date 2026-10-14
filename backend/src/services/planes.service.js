@@ -30,7 +30,7 @@ function createPlanesService(db, tipo, marginPercent = 10) {
       db.query(select + " ORDER BY p.maquina_nombre,p.tarea_nombre", params),
     get,
     async create(input) {
-      const result = await db.query(
+      const result = await db.insert(
         `INSERT INTO ${table} (tarea_id,frecuencia) VALUES (?,?)`,
         data(input),
       );

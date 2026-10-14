@@ -1,6 +1,6 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { finalize } from 'rxjs';
 import { MaquinasService } from './maquinas.service';
@@ -10,13 +10,12 @@ import { errorMessage } from '../../shared/error-message';
   standalone: true,
   imports: [RouterLink, DecimalPipe],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
+    <a class="back-link" routerLink="/inicio/mantenimiento/maquinas">← Máquinas</a>
     <div class="page-heading">
       <div>
         <p class="eyebrow">EQUIPOS</p>
-        <h1>Máquinas</h1>
+        <h1>{{ baja ? 'Baja de máquinas' : 'Listado de máquinas' }}</h1>
       </div>
-      <a class="button primary" routerLink="nueva">+ Nueva máquina</a>
     </div>
     <div class="toolbar">
       <label for="machine-search">Buscar</label
@@ -25,15 +24,15 @@ import { errorMessage } from '../../shared/error-message';
         type="search"
         placeholder="Nombre o nombre corto"
         (input)="search.set($any($event.target).value)"
-      /><a routerLink="/inicio/mantenimiento/horometro">Actualizar horómetro</a>
+      />
+      @if (!baja) {
+        <a routerLink="/inicio/mantenimiento/horometro">Actualizar horómetro</a>
+      }
     </div>
     @if (error()) {
       <p class="error" role="alert">
         {{ error() }} <button class="secondary" (click)="load()">Reintentar</button>
       </p>
-    }
-    @if (success()) {
-      <p class="success" role="status">{{ success() }}</p>
     }
     @if (loading()) {
       <p class="notice" role="status">Cargando máquinas…</p>
@@ -81,8 +80,14 @@ import { errorMessage } from '../../shared/error-message';
                 </td>
                 <td>
                   <div class="actions">
-                    <a class="button secondary" [routerLink]="[machine.id, 'editar']">Editar</a>
-                    @if (machine.status === 'Activo') {
+                    @if (!baja) {
+                      <a
+                        class="button secondary"
+                        [routerLink]="['/inicio/mantenimiento/maquinas', machine.id, 'editar']"
+                        >Editar</a
+                      >
+                    }
+                    @if (baja && machine.status === 'Activo') {
                       <button class="danger" [disabled]="busy()" (click)="deactivate(machine)">
                         Dar de baja
                       </button>
@@ -92,16 +97,26 @@ import { errorMessage } from '../../shared/error-message';
               </tr>
             } @empty {
               <tr>
-                <td colspan="7">No hay máquinas para mostrar.</td>
+                <td colspan="7">
+                  {{
+                    baja
+                      ? 'No hay máquinas activas para dar de baja.'
+                      : 'No hay máquinas para mostrar.'
+                  }}
+                </td>
               </tr>
             }
           </tbody>
         </table>
       </div>
     }
+    @if (success()) {
+      <p class="success" role="status">{{ success() }}</p>
+    }
   `,
 })
 export class MaquinasListComponent {
+  readonly baja = inject(ActivatedRoute).snapshot.data['baja'] === true;
   private readonly api = inject(MaquinasService);
   private readonly destroyRef = inject(DestroyRef);
   readonly machines = signal<Maquina[]>([]);
@@ -111,8 +126,10 @@ export class MaquinasListComponent {
   readonly error = signal('');
   readonly success = signal('');
   readonly filtered = computed(() =>
-    this.machines().filter((m) =>
-      `${m.nombre} ${m.nombre_corto || ''}`.toLowerCase().includes(this.search().toLowerCase()),
+    this.machines().filter(
+      (m) =>
+        (!this.baja || m.status === 'Activo') &&
+        `${m.nombre} ${m.nombre_corto || ''}`.toLowerCase().includes(this.search().toLowerCase()),
     ),
   );
   constructor() {

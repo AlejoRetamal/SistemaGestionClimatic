@@ -2,6 +2,9 @@ import { CatalogDefinition } from '../../shared/catalog/catalog.model';
 export const extraordinariasCatalog: CatalogDefinition = {
   endpoint: 'tareas-extraordinarias',
   path: '/inicio/mantenimiento/tareas-extraordinarias',
+  parentPath: '/inicio/mantenimiento/tareas/menu',
+  parentLabel: 'Tareas',
+  createFromMenuOnly: true,
   title: 'Tareas extraordinarias',
   singular: 'tarea extraordinaria',
   newLabel: 'Nueva tarea extraordinaria',

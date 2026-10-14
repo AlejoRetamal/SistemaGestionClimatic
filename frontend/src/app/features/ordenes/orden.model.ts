@@ -6,6 +6,6 @@ export interface Orden {
   descripcion: string;
   maquina_id: number;
   maquina_nombre: string;
-  activo: number;
+  activo: boolean | number;
   fecha_cierre: string | null;
 }

@@ -78,7 +78,7 @@ function createRepuestosService(db) {
     async create(input) {
       const data = partData(input);
       return db.transaction(async (tx) => {
-        const result = await tx.query(
+        const result = await tx.insert(
           "INSERT INTO repuestos (nombre,maquina_id,descripcion,observaciones,foto,prioritario) VALUES (?,?,?,?,?,?)",
           data.values,
         );
@@ -120,7 +120,7 @@ function createRepuestosService(db) {
         if (!result.affectedRows)
           throw v.fail(404, "No se encontró el repuesto.");
       } catch (error) {
-        if (error.code === "ER_ROW_IS_REFERENCED_2")
+        if (["ER_ROW_IS_REFERENCED_2", "23503", "23001"].includes(error.code))
           throw v.fail(
             409,
             "No se puede eliminar el repuesto porque tiene inventario o consumos asociados.",
@@ -138,10 +138,7 @@ function createRepuestosService(db) {
       );
       return db.transaction(async (tx) => {
         await lock(tx, id);
-        await tx.query(
-          "INSERT INTO inventario (repuesto_id) VALUES (?) ON DUPLICATE KEY UPDATE repuesto_id=VALUES(repuesto_id)",
-          [id],
-        );
+        await tx.ensureInventory(id);
         const inventory = await v.one(
           tx,
           "SELECT cantidad_actual FROM inventario WHERE repuesto_id=? FOR UPDATE",
