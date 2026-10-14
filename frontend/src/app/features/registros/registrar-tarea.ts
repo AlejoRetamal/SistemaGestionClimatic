@@ -23,8 +23,10 @@ function localNow(): string {
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, DecimalPipe],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
-    <h1>Registro de tareas programadas</h1>
+    <a class="back-link" routerLink="/inicio/mantenimiento/registros/menu"
+      >← Registro de tareas programadas</a
+    >
+    <h1>Registrar una tarea</h1>
     <p class="lead">Registrá un trabajo realizado y sus repuestos utilizados.</p>
     @if (loading()) {
       <p class="notice" role="status">Cargando tareas…</p>
@@ -163,8 +165,8 @@ function localNow(): string {
               [disabled]="saving() || loadingTask() || !machine() || !!savedId()"
             >
               {{ saving() ? 'Guardando trabajo…' : 'Registrar trabajo' }}</button
-            ><a class="button secondary" routerLink="/inicio/mantenimiento/registros"
-              >Ver historial</a
+            ><a class="button secondary" routerLink="/inicio/mantenimiento/registros/menu"
+              >Volver</a
             >
           </div>
         </fieldset>

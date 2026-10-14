@@ -13,7 +13,7 @@ export const MAINTENANCE_LINKS: MaintenanceLink[] = [
   {
     title: 'Registro de tareas programadas',
     detail: 'Registrar trabajos realizados y consultar su historial.',
-    path: base + '/registrar-tarea',
+    path: base + '/registros/menu',
   },
   {
     title: 'Tareas',
@@ -38,9 +38,25 @@ export const MAINTENANCE_LINKS: MaintenanceLink[] = [
   { title: 'Máquinas', detail: 'Alta, baja y listado de máquinas.', path: base + '/maquinas' },
 ];
 export const MAINTENANCE_MENUS: Record<
-  'tareas' | 'maquinas' | 'planes' | 'ordenes',
+  'registros' | 'tareas' | 'maquinas' | 'planes' | 'ordenes',
   MaintenanceMenu
 > = {
+  registros: {
+    title: 'Registro de tareas programadas',
+    detail: 'Consultá el historial o registrá un trabajo realizado.',
+    links: [
+      {
+        title: 'Ver historial',
+        detail: 'Consultar los trabajos realizados y sus detalles.',
+        path: base + '/registros',
+      },
+      {
+        title: 'Registrar una tarea',
+        detail: 'Registrar un trabajo realizado y los repuestos utilizados.',
+        path: base + '/registrar-tarea',
+      },
+    ],
+  },
   tareas: {
     title: 'Tareas',
     detail: 'Elegí qué tipo de tarea querés crear o consultar.',

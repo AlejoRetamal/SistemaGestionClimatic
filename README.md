@@ -13,7 +13,7 @@ Se conservan el ingreso con **PIN único**, las sesiones, los roles, el menú `/
 - Órdenes: alta, edición mientras están abiertas y cierre.
 - Historial y detalle de trabajos; registro de tareas con varios repuestos en una transacción.
 
-El menú agrupa las altas comunes y extraordinarias en Tareas; Máquinas tiene alta, baja y listado; Planes y Órdenes tienen sus propios submenús. Repuestos e Inventario comparten un acceso. Solo se ofrece el registro de tareas programadas, desde donde se consulta el historial. Las ejecuciones extraordinarias y las correcciones del historial quedan pendientes. Administración, Producción y Comercial mantienen sus pantallas base.
+El menú agrupa las altas comunes y extraordinarias en Tareas; Máquinas tiene alta, baja y listado; Planes y Órdenes tienen sus propios submenús. Repuestos e Inventario comparten un acceso. Registro de tareas programadas tiene un menú con Ver historial y Registrar una tarea. Las ejecuciones extraordinarias y las correcciones del historial quedan pendientes. Administración, Producción y Comercial mantienen sus pantallas base.
 
 En producción: **https://climatic-srl-frontend.vercel.app**. [Despliegue y actualizaciones en Vercel](docs/vercel.md).
 

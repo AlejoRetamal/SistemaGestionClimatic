@@ -7,6 +7,7 @@ import { MAINTENANCE_MENUS } from './maintenance-links';
 export const mantenimientoRoutes: Routes = [
   ...(
     [
+      ['registros/menu', 'registros'],
       ['tareas/menu', 'tareas'],
       ['maquinas', 'maquinas'],
       ['planes', 'planes'],

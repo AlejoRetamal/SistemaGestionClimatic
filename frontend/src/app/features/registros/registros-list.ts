@@ -10,12 +10,11 @@ import { errorMessage } from '../../shared/error-message';
   standalone: true,
   imports: [RouterLink, DatePipe, DecimalPipe],
   template: `
-    <a class="back-link" routerLink="/inicio/mantenimiento">← Mantenimiento</a>
+    <a class="back-link" routerLink="/inicio/mantenimiento/registros/menu"
+      >← Registro de tareas programadas</a
+    >
     <div class="page-heading">
       <h1>Historial de trabajos</h1>
-      <a class="button primary" routerLink="/inicio/mantenimiento/registrar-tarea"
-        >Registrar tarea programada</a
-      >
     </div>
     <div class="toolbar">
       <label for="search">Buscar</label

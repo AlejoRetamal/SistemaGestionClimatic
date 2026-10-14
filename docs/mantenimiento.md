@@ -78,4 +78,6 @@ La adaptación PostgreSQL conserva estas reglas. Ver [Supabase](supabase.md) par
 
 ## Navegación de altas y ediciones
 
+Registro de tareas programadas abre un menú con dos accesos: Ver historial y Registrar una tarea. Ambas pantallas vuelven a ese menú; el detalle de un trabajo vuelve al historial. El historial no repite el acceso al formulario de registro.
+
 Las altas de tareas, planes, órdenes y máquinas se abren desde su menú, y todos los enlaces de regreso (incluido el mensaje posterior al guardado) vuelven a ese menú. Los listados no repiten accesos de alta. Las ediciones regresan al listado de su módulo. Repuestos mantiene el alta desde su pantalla unificada de inventario.
